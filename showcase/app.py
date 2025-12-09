@@ -54,8 +54,8 @@ st.markdown("""
 render_component(
     'hero',
     props={
-        'title': 'Test Title',
-        'subtitle': 'Test Subtitle',
+        'title': 'streamlit-html-components',
+        'subtitle': 'Build Beautiful UIs with HTML, CSS, and JavaScript',
         'stats': {'components': '1', 'lines': '100', 'examples': '1'}
     },
     styles=['global', 'hero'],
