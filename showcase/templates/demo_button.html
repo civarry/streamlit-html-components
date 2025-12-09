@@ -1,0 +1,22 @@
+<section class="demo-section">
+    <div class="demo-container">
+        <h3>Interactive Button Demo</h3>
+        <p>Try clicking the button below - it uses JavaScript events that communicate with Python!</p>
+        
+        <div class="button-demo-area">
+            <button class="demo-button" onclick="handleDemoClick({{ initial_count }})">
+                {{ button_text }} 🎯
+            </button>
+            <div class="demo-counter">
+                Clicks: <span id="click-count">{{ initial_count }}</span>
+            </div>
+            <div class="demo-status" id="demo-status">
+                Ready to click!
+            </div>
+        </div>
+        
+        <p class="demo-note">
+            Each click sends an event from JavaScript to Python via the framework's bidirectional communication.
+        </p>
+    </div>
+</section>

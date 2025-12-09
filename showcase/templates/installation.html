@@ -1,0 +1,60 @@
+<section class="installation-section">
+    <div class="installation-content">
+        <h1 class="installation-title">📦 Get Started in 60 Seconds</h1>
+        
+        <div class="installation-steps">
+            <div class="installation-step" data-step="1">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Install</div>
+                </div>
+                <div class="step-code">
+                    <pre><code>pip install streamlit-html-components</code></pre>
+                </div>
+                <p class="step-description">
+                    Install the package using pip. This will automatically install all dependencies.
+                </p>
+            </div>
+            
+            <div class="installation-step" data-step="2">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Create Your Component</div>
+                </div>
+                <div class="step-code">
+                    <pre><code># app.py
+from streamlit_html_components import render_component, configure
+
+configure(
+    templates_dir='components/templates',
+    styles_dir='components/styles',
+    scripts_dir='components/scripts'
+)
+
+render_component('button', props={'text': 'Hello!'})</code></pre>
+                </div>
+                <p class="step-description">
+                    Create a component with HTML, CSS, and JavaScript in separate files.
+                </p>
+            </div>
+            
+            <div class="installation-step" data-step="3">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Run</div>
+                </div>
+                <div class="step-code">
+                    <pre><code>streamlit run app.py</code></pre>
+                </div>
+                <p class="step-description">
+                    Run your app and see your component live in the browser.
+                </p>
+            </div>
+        </div>
+        
+        <div class="installation-success">
+            <h3>🎉 That's it!</h3>
+            <p>Your first component is live and ready to use!</p>
+        </div>
+    </div>
+</section>
