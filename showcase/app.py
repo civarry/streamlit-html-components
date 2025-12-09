@@ -8,8 +8,11 @@ import sys
 from pathlib import Path
 import os
 
-# Add parent directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
+# Get the absolute path to the showcase directory
+BASE_DIR = Path(__file__).parent
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(BASE_DIR.parent / 'src'))
 
 from streamlit_html_components import render_component, configure
 
@@ -21,11 +24,11 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Configure the framework
+# Configure the framework with absolute paths
 configure(
-    templates_dir='templates',
-    styles_dir='styles',
-    scripts_dir='scripts',
+    templates_dir=str(BASE_DIR / 'templates'),
+    styles_dir=str(BASE_DIR / 'styles'),
+    scripts_dir=str(BASE_DIR / 'scripts'),
     default_cache=True
 )
 
