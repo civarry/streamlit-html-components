@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo CRUD App</title>
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <h1>📝 {{ app_title or "My Todo List" }}</h1>
+            <p class="subtitle">{{ subtitle or "Manage your tasks efficiently" }}</p>
+        </header>
+
+        <!-- Create Section -->
+        <div class="create-section">
+            <h2>Add New Task</h2>
+            <div class="input-group">
+                <input
+                    type="text"
+                    id="taskTitle"
+                    placeholder="Task title..."
+                    class="task-input"
+                />
+                <input
+                    type="text"
+                    id="taskDescription"
+                    placeholder="Description (optional)..."
+                    class="task-input"
+                />
+                <button id="addBtn" class="btn btn-primary">
+                    <span class="btn-icon">+</span> Add Task
+                </button>
+            </div>
+        </div>
+
+        <!-- Read/List Section -->
+        <div class="list-section">
+            <div class="list-header">
+                <h2>Tasks</h2>
+                <div class="task-stats">
+                    <span class="stat">
+                        <strong id="totalCount">0</strong> Total
+                    </span>
+                    <span class="stat">
+                        <strong id="pendingCount">0</strong> Pending
+                    </span>
+                    <span class="stat">
+                        <strong id="completedCount">0</strong> Completed
+                    </span>
+                </div>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="pending">Pending</button>
+                <button class="filter-btn" data-filter="completed">Completed</button>
+            </div>
+
+            <!-- Task List -->
+            <div id="taskList" class="task-list">
+                <!-- Tasks will be dynamically inserted here -->
+                <div class="empty-state">
+                    <p>No tasks yet. Add your first task above!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Modal (Hidden by default) -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Edit Task</h3>
+                    <button class="close-btn" onclick="closeEditModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editTaskId" />
+                    <label for="editTaskTitle">Title:</label>
+                    <input
+                        type="text"
+                        id="editTaskTitle"
+                        class="task-input"
+                        placeholder="Task title..."
+                    />
+                    <label for="editTaskDescription">Description:</label>
+                    <input
+                        type="text"
+                        id="editTaskDescription"
+                        class="task-input"
+                        placeholder="Description..."
+                    />
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Built with streamlit-html-components 🚀</p>
+        </footer>
+    </div>
+</body>
+</html>
