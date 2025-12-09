@@ -28,7 +28,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "streamlit>=1.29.0",
+    "streamlit>=1.29.0,<1.51.0",  # CHANGED: Pinned to work with Python 3.8/3.9
     "jinja2>=3.1.0",
 ]
 
