@@ -7,7 +7,7 @@ name = "streamlit-html-components"
 version = "0.1.0"
 description = "Use traditional HTML/CSS/JS file structure with Streamlit applications"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"  # CHANGED: Force Python 3.10+
 license = {text = "MIT"}
 authors = [
     {name = "CJ Carito", email = "cjcarito@example.com"}
@@ -18,9 +18,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.10",  # CHANGED: Removed 3.8, 3.9
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -28,7 +26,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "streamlit>=1.29.0,<1.51.0",  # CHANGED: Pinned to work with Python 3.8/3.9
+    "streamlit>=1.52.0",  # CHANGED: Can use latest since we're Python 3.10+
     "jinja2>=3.1.0",
 ]
 
