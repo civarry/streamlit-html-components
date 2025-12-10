@@ -41,8 +41,6 @@
 }
 
 .feature-card {
-    background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-    border: 2px solid #667eea30;
     border-radius: 16px;
     padding: 30px;
     transition: all 0.3s ease;
