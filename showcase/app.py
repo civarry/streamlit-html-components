@@ -6,7 +6,6 @@ Professional, polished UI/UX design
 import streamlit as st
 import sys
 from pathlib import Path
-import os
 
 # Get the absolute path to the showcase directory
 BASE_DIR = Path(__file__).parent
@@ -134,122 +133,6 @@ render_component(
     scripts=['why'],
     height=1250,
     key='why_section'
-)
-
-# ============================================
-# EXAMPLES SECTION
-# ============================================
-
-# Create a simple demo using the framework itself
-# This demo should also be a component, not inline HTML
-
-# First, let's create a demo button component
-render_component(
-    'demo_button',
-    props={
-        'button_text': 'Try Demo Button',
-        'initial_count': 0
-    },
-    styles=['global', 'demo_button'],
-    scripts=['demo_button'],
-    height=450,
-    key='demo_button_section'
-)
-
-# Now the examples section
-tabs_data = [
-    {
-        'id': 'button-tab',
-        'title': '🔘 Interactive Button',
-        'content': {
-            'title': 'Interactive Button',
-            'features': [
-                'Custom CSS animations',
-                'Click counter',
-                'JavaScript events',
-                'Smooth transitions'
-            ],
-            'code': '''render_component('button',
-    props={
-        'text': 'Click me!',
-        'show_counter': True
-    },
-    height=150
-)''',
-            'info': '👆 See the demo button above!'
-        },
-        'has_demo': True,
-        'demo_target': 'demo_button_section'
-    },
-    {
-        'id': 'card-tab',
-        'title': '🎨 Tailwind Card',
-        'content': {
-            'title': 'Tailwind CSS Card',
-            'features': [
-                'No custom CSS needed',
-                'Responsive design',
-                'Template loops',
-                'Custom filters'
-            ],
-            'code': '''configure(external_frameworks=['tailwind'])
-
-render_component('card',
-    props={
-        'title': 'Premium Headphones',
-        'price': 299.99,
-        'tags': ['new', 'sale']
-    }
-)''',
-            'info': 'See examples/tailwind_card/ for full implementation'
-        },
-        'has_demo': False
-    },
-    {
-        'id': 'crud-tab',
-        'title': '📝 Full CRUD App',
-        'content': {
-            'title': 'Full CRUD Todo Application',
-            'features': [
-                'Create, Read, Update, Delete',
-                'LocalStorage persistence',
-                'Real-time filtering',
-                'Beautiful UI/UX'
-            ],
-            'code': '''# Run the full example
-cd examples/crud_todo
-streamlit run app.py''',
-            'info': 'Complete app with all CRUD operations'
-        },
-        'has_demo': False
-    }
-]
-
-crud_features = [
-    {'icon': '✅', 'title': 'Create Tasks', 'description': 'Add new todos'},
-    {'icon': '📖', 'title': 'Read & Filter', 'description': 'View all tasks'},
-    {'icon': '✏️', 'title': 'Update', 'description': 'Edit details'},
-    {'icon': '🗑️', 'title': 'Delete', 'description': 'Remove tasks'}
-]
-
-render_component(
-    'examples',
-    props={
-        'tabs': tabs_data,
-        'crud_section': {
-            'title': '📝 Full CRUD Todo Application',
-            'description': 'A complete todo list app with Create, Read, Update, Delete operations, localStorage persistence, filtering, and beautiful UI.',
-            'features': crud_features,
-            'instructions': 'To run the full CRUD example:',
-            'code': '''cd examples/crud_todo
-streamlit run app.py''',
-            'note': 'The CRUD app is a full-featured application best viewed in its own window'
-        }
-    },
-    styles=['global', 'examples'],
-    scripts=['examples'],
-    height=2000,
-    key='examples_section'
 )
 
 # ============================================
