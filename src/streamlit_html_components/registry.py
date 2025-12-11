@@ -11,8 +11,9 @@ from typing import Dict, List, Optional, Any
 from pydantic import BaseModel, field_validator
 import re
 
-from .exceptions import ComponentNotFoundError, TemplateSyntaxError
+from .exceptions import ComponentNotFoundError, TemplateSyntaxError, AssetNotFoundError
 from .config_v2 import ComponentConfig
+from .diagnostics import FuzzyMatcher, PathSuggester
 
 
 class ComponentSchema(BaseModel):
@@ -112,16 +113,27 @@ class ComponentRegistry:
         # Validate template exists
         template_path = self.config.templates_dir / component.template
         if not template_path.exists():
-            # Provide helpful error message with available templates
+            # Find similar template files using fuzzy matching
             available = list(self.config.templates_dir.glob('*.html'))
             available_names = [f.name for f in available]
 
-            raise ComponentNotFoundError(
-                f"Template not found: {template_path}\n"
-                f"Component: {component.name}\n"
-                f"Template file: {component.template}\n"
-                f"Templates directory: {self.config.templates_dir}\n"
-                f"Available templates: {', '.join(available_names) if available_names else 'none'}"
+            # Get suggestions for similar file names
+            suggestions_obj = PathSuggester.suggest_similar_files(
+                Path(component.template),
+                self.config.templates_dir,
+                '*.html'
+            )
+            suggestions = [s.suggestion for s in suggestions_obj]
+
+            raise AssetNotFoundError(
+                asset_path=component.template,
+                asset_type='template',
+                suggestions=suggestions,
+                search_directory=str(self.config.templates_dir),
+                context={
+                    'component_name': component.name,
+                    'available_templates': available_names if available_names else ['(none)']
+                }
             )
 
         # Validate Jinja2 template syntax
@@ -129,9 +141,9 @@ class ComponentRegistry:
             self._validate_template_syntax(template_path)
         except Exception as e:
             raise TemplateSyntaxError(
-                f"Invalid template syntax in {component.name}:\n"
-                f"Template: {template_path}\n"
-                f"Error: {e}"
+                template_path=str(template_path),
+                error_message=str(e),
+                context={'component_name': component.name}
             )
 
         # Validate style files exist (if specified)
@@ -139,13 +151,26 @@ class ComponentRegistry:
             for style_file in component.styles:
                 style_path = self.config.styles_dir / style_file
                 if not style_path.exists():
+                    # Get suggestions for similar files
+                    suggestions_obj = PathSuggester.suggest_similar_files(
+                        Path(style_file),
+                        self.config.styles_dir,
+                        '*.css'
+                    )
+                    suggestions = [s.suggestion for s in suggestions_obj]
+
                     available = list(self.config.styles_dir.glob('*.css'))
                     available_names = [f.name for f in available]
 
-                    raise ComponentNotFoundError(
-                        f"Style file not found: {style_path}\n"
-                        f"Component: {component.name}\n"
-                        f"Available styles: {', '.join(available_names) if available_names else 'none'}"
+                    raise AssetNotFoundError(
+                        asset_path=style_file,
+                        asset_type='style',
+                        suggestions=suggestions,
+                        search_directory=str(self.config.styles_dir),
+                        context={
+                            'component_name': component.name,
+                            'available_styles': available_names if available_names else ['(none)']
+                        }
                     )
 
         # Validate script files exist (if specified)
@@ -153,13 +178,26 @@ class ComponentRegistry:
             for script_file in component.scripts:
                 script_path = self.config.scripts_dir / script_file
                 if not script_path.exists():
+                    # Get suggestions for similar files
+                    suggestions_obj = PathSuggester.suggest_similar_files(
+                        Path(script_file),
+                        self.config.scripts_dir,
+                        '*.js'
+                    )
+                    suggestions = [s.suggestion for s in suggestions_obj]
+
                     available = list(self.config.scripts_dir.glob('*.js'))
                     available_names = [f.name for f in available]
 
-                    raise ComponentNotFoundError(
-                        f"Script file not found: {script_path}\n"
-                        f"Component: {component.name}\n"
-                        f"Available scripts: {', '.join(available_names) if available_names else 'none'}"
+                    raise AssetNotFoundError(
+                        asset_path=script_file,
+                        asset_type='script',
+                        suggestions=suggestions,
+                        search_directory=str(self.config.scripts_dir),
+                        context={
+                            'component_name': component.name,
+                            'available_scripts': available_names if available_names else ['(none)']
+                        }
                     )
 
     def _validate_template_syntax(self, template_path: Path) -> None:

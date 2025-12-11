@@ -62,6 +62,13 @@ from .security import (
     SecurityAuditor,
     inject_csp_meta
 )
+from .diagnostics import (
+    FuzzyMatcher,
+    PathSuggester,
+    ErrorFormatter,
+    DebugMode,
+    Suggestion
+)
 from .exceptions import (
     StreamlitHtmlComponentsError,
     ComponentNotFoundError,
@@ -103,6 +110,13 @@ __all__ = [
     "create_strict_csp",
     "SecurityAuditor",
     "inject_csp_meta",
+
+    # Diagnostics
+    "FuzzyMatcher",
+    "PathSuggester",
+    "ErrorFormatter",
+    "DebugMode",
+    "Suggestion",
 
     # Configuration
     "get_config",
