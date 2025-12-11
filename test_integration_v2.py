@@ -13,15 +13,52 @@ import sys
 from pathlib import Path
 import tempfile
 import shutil
+import importlib.util
 
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent / 'src' / 'streamlit_html_components'))
+# Add src to path to enable package imports
+src_path = Path(__file__).parent / 'src'
+sys.path.insert(0, str(src_path))
 
-# Import directly to avoid Streamlit dependency
-import config_v2
-import registry
-import serialization
-import cache_manager
+# Manually import modules to avoid Streamlit dependency from __init__.py
+def import_module_from_file(module_name, file_path):
+    """Import a module from a file path."""
+    spec = importlib.util.spec_from_file_location(module_name, file_path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
+
+# Set up the package structure manually
+pkg_path = src_path / 'streamlit_html_components'
+sys.modules['streamlit_html_components'] = type(sys)('streamlit_html_components')
+sys.modules['streamlit_html_components'].__path__ = [str(pkg_path)]
+
+# Import core modules in dependency order
+exceptions = import_module_from_file(
+    'streamlit_html_components.exceptions',
+    pkg_path / 'exceptions.py'
+)
+validators = import_module_from_file(
+    'streamlit_html_components.validators',
+    pkg_path / 'validators.py'
+)
+serialization = import_module_from_file(
+    'streamlit_html_components.serialization',
+    pkg_path / 'serialization.py'
+)
+config_v2 = import_module_from_file(
+    'streamlit_html_components.config_v2',
+    pkg_path / 'config_v2.py'
+)
+registry = import_module_from_file(
+    'streamlit_html_components.registry',
+    pkg_path / 'registry.py'
+)
+cache_manager = import_module_from_file(
+    'streamlit_html_components.cache_manager',
+    pkg_path / 'cache_manager.py'
+)
+
 from datetime import datetime
 
 
