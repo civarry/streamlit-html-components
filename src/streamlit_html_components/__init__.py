@@ -69,6 +69,12 @@ from .diagnostics import (
     DebugMode,
     Suggestion
 )
+from .validation import (
+    ValidationType,
+    ValidationRule,
+    PropsSchema,
+    PropsValidator
+)
 from .exceptions import (
     StreamlitHtmlComponentsError,
     ComponentNotFoundError,
@@ -117,6 +123,12 @@ __all__ = [
     "ErrorFormatter",
     "DebugMode",
     "Suggestion",
+
+    # Validation
+    "ValidationType",
+    "ValidationRule",
+    "PropsSchema",
+    "PropsValidator",
 
     # Configuration
     "get_config",
