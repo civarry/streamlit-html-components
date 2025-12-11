@@ -9,7 +9,7 @@
 
 This document tracks progress on the complete framework redesign of streamlit-html-components. The project is transforming from a buggy proof-of-concept into a production-ready library with enterprise-grade reliability.
 
-**Current Phase:** Phase 1 - Foundation & Critical Fixes (100% ✅ COMPLETE!)
+**Current Phase:** Phase 2 - Enhanced Developer Experience (Phase 2.1 ✅ COMPLETE!)
 
 ---
 
@@ -608,6 +608,91 @@ git status
 - Integration tests: < 1 second
 - Security tests: 0.23 seconds
 - **Total runtime: ~2-3 seconds** (extremely fast!)
+
+---
+
+## ✅ Phase 2.1 - Enhanced Error Messages (100% Complete)
+
+**Goal:** Make error messages helpful with "did you mean?" suggestions
+
+### New Files Created
+
+1. **diagnostics.py** (304 lines) - Diagnostics and error suggestion utilities
+   - `FuzzyMatcher` - String similarity matching using difflib
+   - `PathSuggester` - File path suggestions when assets not found
+   - `ErrorFormatter` - Formatted error messages with context
+   - `DebugMode` - Verbose logging for development
+
+### Enhanced Files
+
+2. **exceptions.py** (298 lines) - Enhanced exception classes
+   - `StreamlitHtmlComponentsError` - Base class with context support
+   - `ComponentNotFoundError` - Shows suggestions and available components
+   - `AssetNotFoundError` - Suggests similar files with confidence scores
+   - `TemplateSyntaxError` - Shows line numbers and error context
+   - `InvalidPropsError` - Lists validation failures per prop
+
+3. **registry.py** - Integrated fuzzy matching
+   - Template not found → suggests similar templates
+   - Style not found → suggests similar CSS files
+   - Script not found → suggests similar JS files
+   - All errors show available files and confidence scores
+
+4. **__init__.py** - Exported diagnostics utilities
+   - Added FuzzyMatcher, PathSuggester, ErrorFormatter, DebugMode, Suggestion
+
+### Key Features
+
+**Fuzzy Matching:**
+- Uses `difflib.SequenceMatcher` for similarity detection
+- Returns top N suggestions with confidence scores (0.0 to 1.0)
+- Configurable similarity threshold (default 0.6)
+
+**Path Suggestions:**
+- Scans directories for similar file names
+- Shows context (which directory file was found in)
+- Suggests files even with typos (e.g., 'buton.html' → 'button.html')
+
+**Error Message Formatting:**
+```
+Template asset 'buton.html' not found
+Searched in: /path/to/templates
+
+Did you mean 'button.html'?
+
+Context:
+  component_name: my-component
+  available_templates: ['button.html', 'card.html']
+```
+
+**Debug Mode:**
+- `DebugMode.enable(level=1)` for verbose output
+- Three levels: 1=info, 2=debug, 3=trace
+- Helpful for troubleshooting component issues
+
+### Developer Experience Improvements
+
+1. **Typo Detection:** "Did you mean 'button'?" for component/file typos
+2. **Context-Rich Errors:** Shows what was searched, where, and what's available
+3. **Confidence Scores:** Shows similarity percentage for each suggestion
+4. **File Listings:** Displays available components/templates/styles/scripts
+5. **Line Numbers:** Template errors show exact line numbers
+6. **Validation Details:** Props errors show which specific props failed
+
+### Commit Information
+
+**Commit:** 922a29d - feat: Phase 2.1 - Enhanced error messages with fuzzy matching
+- 4 files changed, 709 insertions(+), 32 deletions(-)
+- New: diagnostics.py (304 lines)
+- Enhanced: exceptions.py, registry.py, __init__.py
+
+### What's Next (Phase 2.2)
+
+**Props Schema Validation:**
+- JSON Schema validation for component props
+- Runtime type checking
+- Custom validation rules
+- Better error messages for prop validation failures
 
 ---
 
