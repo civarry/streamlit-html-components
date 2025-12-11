@@ -103,7 +103,153 @@ streamlit run app.py
 
 That's it! Your custom HTML/CSS/JS component is now running in Streamlit.
 
-## Core API
+## Modern v2 API (Recommended)
+
+The v2 API provides enhanced features with better validation, immutable configuration, and improved performance.
+
+### Key Benefits
+
+- ✅ **Component Registry** - Validate components at startup, not render time
+- 🔒 **Immutable Configuration** - Pydantic-based type-safe configuration
+- 🚀 **Better Caching** - Cache keys based on actual file content
+- 📝 **Better Error Messages** - Detailed validation errors with suggestions
+- 🔍 **Auto-discovery** - Automatically find and register components
+
+### Quick Start with v2
+
+```python
+import streamlit as st
+from streamlit_html_components import configure_v2, render_component_v2
+
+# Configure with auto-discovery
+configure_v2(
+    templates_dir='components/templates',
+    styles_dir='components/styles',
+    scripts_dir='components/scripts',
+    frameworks=['tailwind'],
+    auto_discover=True  # Automatically register all components
+)
+
+st.title("My App with v2 API")
+
+# Render component (validated at startup)
+render_component_v2('button', props={'text': 'Click me!'})
+```
+
+### v2 API Reference
+
+#### `configure_v2()`
+
+Modern configuration with Pydantic validation:
+
+```python
+from streamlit_html_components import configure_v2
+
+configure_v2(
+    templates_dir='components/templates',
+    styles_dir='components/styles',
+    scripts_dir='components/scripts',
+    frameworks=['tailwind', 'bootstrap'],
+
+    # Cache settings
+    enable_cache=True,
+    cache_max_size_mb=100,
+    cache_ttl_seconds=300,
+
+    # Security settings
+    enable_csp=True,
+    allowed_origins=['*'],
+    validate_paths=True,
+
+    # Auto-discovery
+    auto_discover=True  # Scan and register all components
+)
+```
+
+#### `render_component_v2()`
+
+Render components with registry validation:
+
+```python
+from streamlit_html_components import render_component_v2
+
+render_component_v2(
+    component_name='button',
+    props={'text': 'Click me'},
+    height=100,
+    cache=True,
+    on_event=callback_function
+)
+```
+
+#### `register_component()`
+
+Manually register components:
+
+```python
+from streamlit_html_components import register_component
+
+register_component(
+    name='custom_button',
+    template='button.html',
+    styles=['button.css', 'animations.css'],
+    scripts=['button.js'],
+    validate=True  # Validate files exist at registration time
+)
+```
+
+#### `list_components()`
+
+List all registered components:
+
+```python
+from streamlit_html_components import list_components
+
+components = list_components()
+print(components)  # ['button', 'card', 'hero', ...]
+```
+
+#### `get_component_info()`
+
+Get component metadata:
+
+```python
+from streamlit_html_components import get_component_info
+
+info = get_component_info('button')
+print(info.template)  # 'button.html'
+print(info.styles)    # ['button.css']
+print(info.scripts)   # ['button.js']
+```
+
+### Migration from v1 to v2
+
+The v2 API is backward compatible. You can use both APIs in the same app:
+
+```python
+from streamlit_html_components import (
+    configure, render_component,      # v1 API
+    configure_v2, render_component_v2  # v2 API
+)
+
+# Use v1 for backward compatibility
+configure(templates_dir='old_components/templates')
+render_component('legacy_button', props={'text': 'Old API'})
+
+# Use v2 for new components
+configure_v2(templates_dir='new_components/templates', auto_discover=True)
+render_component_v2('modern_button', props={'text': 'New API'})
+```
+
+**Why migrate to v2?**
+
+1. **Earlier error detection** - Components validated at startup
+2. **Better caching** - Invalidates cache when files change
+3. **Type safety** - Pydantic validates all configuration
+4. **Immutability** - Configuration can't be accidentally modified
+5. **Better DX** - Auto-discovery reduces boilerplate
+
+## Core API (v1 - Legacy)
 
 ### `render_component()`
 
@@ -446,7 +592,19 @@ render_component(
 
 ## API Reference
 
-### Core Functions
+### Core Functions (v2 - Recommended)
+
+| Function | Description |
+|----------|-------------|
+| `configure_v2()` | Configure with Pydantic validation and auto-discovery |
+| `render_component_v2()` | Render component with registry validation |
+| `register_component()` | Manually register a component |
+| `list_components()` | List all registered components |
+| `get_component_info()` | Get component metadata |
+| `get_config_v2()` | Get current v2 configuration |
+| `get_registry()` | Get component registry instance |
+
+### Core Functions (v1 - Legacy)
 
 | Function | Description |
 |----------|-------------|

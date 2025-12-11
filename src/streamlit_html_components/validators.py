@@ -98,15 +98,33 @@ class Validator:
             raise ConfigurationError(f"Invalid directory path: {path}. Error: {e}")
 
         # Security check: Prevent path traversal
-        # Ensure the resolved path is within or relative to current working directory
+        # Ensure the resolved path is within the current working directory
         cwd = Path.cwd().resolve()
+
         try:
-            # Check if path is within cwd or is an absolute path that exists
-            if not (str(dir_path).startswith(str(cwd)) or dir_path.is_absolute()):
-                # Allow absolute paths but warn about relative paths that go outside cwd
-                pass  # We'll allow this for flexibility
-        except (ValueError, OSError):
-            raise SecurityError(f"Path traversal detected or invalid path: {path}")
+            # Check if the resolved path is within cwd
+            # This will raise ValueError if dir_path is not relative to cwd
+            relative_path = dir_path.relative_to(cwd)
+
+            # Additional check: ensure no ".." in the relative path
+            if ".." in str(relative_path):
+                raise SecurityError(
+                    f"Path traversal detected in: {path}\n"
+                    f"Resolved to: {dir_path}\n"
+                    f"Working directory: {cwd}\n"
+                    f"Paths must be within the working directory."
+                )
+
+        except ValueError:
+            # Path is not relative to cwd - could be absolute path outside cwd
+            # For security, we only allow paths within the working directory
+            raise SecurityError(
+                f"Path outside working directory: {path}\n"
+                f"Resolved to: {dir_path}\n"
+                f"Working directory: {cwd}\n"
+                f"For security, only paths within the working directory are allowed.\n"
+                f"Use relative paths or absolute paths within the project."
+            )
 
         if not dir_path.exists():
             if create_if_missing:
