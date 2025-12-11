@@ -525,4 +525,52 @@ git status
 
 ---
 
+## Testing and Validation
+
+### Test Files Created
+1. **validate_v2.py** - Syntax validation for all v2 modules
+2. **test_v2_basic.py** - Integration tests without external dependencies
+3. **test_integration_v2.py** - Comprehensive integration tests (requires pydantic)
+4. **tests/test_security.py** - Security test suite (requires pytest)
+
+### Testing Results (2025-12-11)
+
+#### Basic Validation Tests ✅ ALL PASSED
+- **Serialization Module:**
+  - ✅ serialize_value handles complex types (datetime, Path)
+  - ✅ Props serialization is deterministic
+  - ✅ Props hashing is deterministic (SHA256)
+
+- **Security Module:**
+  - ✅ Default CSP policy generation works
+  - ✅ Strict CSP policy generation works
+  - ✅ CSP meta tag generation works
+  - ✅ Security auditor detects eval()
+  - ✅ Security auditor detects innerHTML
+  - ✅ Input sanitization works
+  - ✅ CSP meta tag injection works
+
+- **File Structure:**
+  - ✅ All v2 module files present
+  - ✅ All modules have valid Python syntax
+
+### Bug Fixed During Testing
+
+**Issue:** Security pattern matching case sensitivity bug
+- **Location:** `src/streamlit_html_components/security.py:216-223`
+- **Problem:** Patterns like 'innerHTML' (mixed case) were being checked against lowercase HTML, causing mismatches
+- **Fix:** Changed all patterns to lowercase ('innerhtml', 'onerror=', etc.) for consistent case-insensitive matching
+- **Files Updated:**
+  - `security.py` - Fixed dangerous_patterns list
+  - `test_security.py` - Updated assertions to match lowercase patterns
+  - `test_v2_basic.py` - Updated assertions to match lowercase patterns
+
+### Testing Notes
+- Full integration tests require pydantic: `pip install pydantic`
+- Security pytest suite requires pytest: `pip install pytest`
+- Basic validation tests run without external dependencies
+- All core functionality (serialization, security, file structure) validated
+
+---
+
 **This progress document should be referenced when resuming development to understand what's been completed and what remains.**

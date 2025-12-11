@@ -212,15 +212,14 @@ class SecurityAuditor:
         """
         issues = []
 
-        # Check for dangerous patterns
+        # Check for dangerous patterns (all lowercase for case-insensitive matching)
         dangerous_patterns = [
             ('eval(', 'Use of eval() can lead to code injection'),
-            ('innerHTML', 'Direct innerHTML assignment can lead to XSS'),
+            ('innerhtml', 'Direct innerHTML assignment can lead to XSS'),
             ('document.write', 'document.write can be exploited for XSS'),
             ('javascript:', 'javascript: URLs can execute arbitrary code'),
-            ('on error=', 'Inline event handlers can be XSS vectors'),
-            ('onclick=', 'Inline event handlers can be XSS vectors'),
             ('onerror=', 'Inline event handlers can be XSS vectors'),
+            ('onclick=', 'Inline event handlers can be XSS vectors'),
         ]
 
         html_lower = html.lower()

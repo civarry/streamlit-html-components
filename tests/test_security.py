@@ -152,7 +152,7 @@ class TestSecurityAuditor:
 
         issues = auditor.audit_html(html)
         assert len(issues) > 0
-        assert any('innerHTML' in issue['pattern'] for issue in issues)
+        assert any('innerhtml' in issue['pattern'] for issue in issues)
 
     def test_detect_inline_event_handlers(self):
         """Test detection of inline event handlers."""
