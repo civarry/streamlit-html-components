@@ -76,4 +76,5 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "--cov=src/streamlit_html_components --cov-report=html --cov-report=term"
+# Coverage options (requires pytest-cov: pip install pytest-cov)
+# addopts = "--cov=src/streamlit_html_components --cov-report=html --cov-report=term"

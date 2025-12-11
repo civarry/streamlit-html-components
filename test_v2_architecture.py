@@ -102,7 +102,7 @@ def test_configuration():
             security=config_v2.SecurityConfig(enable_csp=True)
         )
 
-        assert config.templates_dir == templates_dir
+        assert config.templates_dir == templates_dir.resolve()
         assert config.cache.enabled == True
         assert config.cache.max_size_mb == 50
         assert 'tailwind' in config.frameworks
@@ -121,7 +121,7 @@ def test_configuration():
             styles_dir=styles_dir,
             scripts_dir=scripts_dir
         )
-        assert default_config.templates_dir == templates_dir
+        assert default_config.templates_dir == templates_dir.resolve()
         print("✓ create_default_config works")
 
 
