@@ -2,18 +2,36 @@
 
 **Use traditional HTML/CSS/JS file structure with Streamlit** while keeping the benefits of free Streamlit deployment.
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-0.3.0-green.svg)](https://pypi.org/project/streamlit-html-components/)
+
+## ✨ What's New in v0.3.0
+
+- 🔥 **Hot Reload** - Component files auto-reload during development
+- 🔄 **State Management** - Real-time state sync with conflict resolution
+- 📋 **Event Replay** - Record and replay component events
+- ✅ **Props Validation** - JSON Schema validation for component props
+- 📦 **Component Registry** - Early validation at startup
 
 ## Features
 
+### Core Features
 - 📁 **Organized File Structure** - Separate HTML/CSS/JS files (traditional web development workflow)
 - 🔄 **Template Variables** - Jinja2-powered props and data binding
 - 🎨 **Framework Integration** - Easy setup with Tailwind, Bootstrap, Bulma, and more
 - ⚡ **Performance Caching** - Multi-level caching for fast rendering
-- 🔌 **Bidirectional Communication** - JavaScript can communicate back to Python
 - 🚀 **Streamlit Cloud Ready** - Works with free Streamlit deployment
 - 🛡️ **Security Built-in** - XSS prevention and input validation
+
+### Advanced Features (v0.3.0)
+- 🔥 **Hot Reload** - Component files auto-reload during development (no restart needed!)
+- 🔌 **Enhanced Bidirectional Communication** - State management, event replay, conflict resolution
+- ✅ **Props Validation** - JSON Schema or manual validation rules
+- 📦 **Component Registry** - Validate components at startup, not render time
+- 🔍 **Fuzzy Matching** - Smart error messages with suggestions
+- 📊 **State History** - Track and rollback state changes
+- 🎯 **Event Recording** - Automatic event history with replay capability
 
 ## Installation
 
@@ -452,7 +470,46 @@ stats = cache_stats()
 # {'total_entries': 5, 'total_size_kb': 45.2, ...}
 ```
 
-## Bidirectional Communication
+## 🔥 Hot Reload (v0.3.0)
+
+Enable instant component updates during development - no Streamlit restart needed!
+
+```python
+from streamlit_html_components import configure_v2, enable_hot_reload
+
+# Configure your components
+configure_v2(
+    templates_dir='components/templates',
+    styles_dir='components/styles',
+    scripts_dir='components/scripts'
+)
+
+# Enable hot reload with one line!
+enable_hot_reload(verbose=True)
+
+# Now edit your component files and see changes instantly! 🔥
+```
+
+**What gets watched:**
+- `templates/*.html` - Component templates
+- `styles/*.css` - CSS stylesheets
+- `scripts/*.js` - JavaScript files
+
+**How it works:**
+1. FileWatcher detects file changes (using watchdog or polling)
+2. DevServer invalidates cache for affected components
+3. Streamlit auto-reruns and shows updated component
+4. Zero manual intervention required!
+
+**Optional dependency:**
+```bash
+pip install watchdog  # For instant file detection (recommended)
+# Without watchdog, falls back to polling mode (still works!)
+```
+
+## 🔄 Enhanced Bidirectional Communication (v0.3.0)
+
+### Basic Communication
 
 Send data from JavaScript to Python:
 
@@ -479,6 +536,143 @@ render_component(
     on_event=on_button_click  # Python callback
 )
 ```
+
+### State Management (v0.3.0)
+
+Real-time state synchronization with conflict resolution:
+
+```python
+from streamlit_html_components.bidirectional import StateManager, ConflictResolution
+
+# Create state manager
+state_manager = StateManager(
+    conflict_resolution=ConflictResolution.MERGE,
+    max_history=100
+)
+
+# Set initial state
+state_manager.set_state('counter', {'count': 0, 'step': 1})
+
+# Subscribe to state changes
+def on_state_change(snapshot):
+    st.write(f"State updated: {snapshot.state}")
+
+state_manager.subscribe('counter', on_state_change)
+
+# Sync from client (JavaScript)
+success, conflicts = state_manager.sync_from_client(
+    'counter',
+    client_state={'count': 5},
+    client_version=1
+)
+```
+
+**Conflict Resolution Strategies:**
+- `CLIENT_WINS` - Client updates always accepted
+- `SERVER_WINS` - Server state maintained
+- `LATEST_WINS` - Most recent update wins
+- `MERGE` - Intelligent merging of changes
+- `CUSTOM` - User-defined resolution function
+
+**State Features:**
+- Version tracking for every state change
+- Complete state history with rollback
+- State diffing (added/modified/removed)
+- Export/import as JSON
+- Real-time change notifications
+
+### Event Replay (v0.3.0)
+
+Record and replay component events for debugging and testing:
+
+```python
+from streamlit_html_components.bidirectional import get_bridge
+
+bridge = get_bridge()
+
+# Events are automatically recorded
+bridge.handle_event('my_component', {
+    'event': 'click',
+    'data': {'button_id': 'submit'}
+})
+
+# Get event history
+events = bridge.get_event_history('my_component')
+
+# Replay all events
+bridge.replay_events('my_component')
+
+# Export events as JSON
+json_data = bridge.export_events('my_component')
+```
+
+## ✅ Props Validation (v0.3.0)
+
+Validate component props with JSON Schema or manual rules:
+
+### JSON Schema Validation
+
+```python
+from streamlit_html_components import register_component, PropsSchema
+
+# Define schema
+schema = PropsSchema({
+    "type": "object",
+    "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "age": {"type": "integer", "minimum": 0},
+        "email": {"type": "string", "format": "email"}
+    },
+    "required": ["name", "email"]
+})
+
+# Register component with validation
+register_component(
+    name='user_form',
+    template='user_form.html',
+    props_schema=schema
+)
+
+# Invalid props will raise InvalidPropsError
+render_component_v2('user_form', props={
+    'name': '',  # ❌ Fails: minLength validation
+    'age': -5,   # ❌ Fails: minimum validation
+})
+```
+
+### Manual Validation Rules
+
+```python
+from streamlit_html_components import PropsSchema, ValidationRule, ValidationType
+
+schema = PropsSchema()
+
+# Add validation rules
+schema.add_rule(ValidationRule(
+    prop_name='email',
+    validation_type=ValidationType.PATTERN,
+    rule=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    error_message='Must be a valid email'
+))
+
+schema.add_rule(ValidationRule(
+    prop_name='age',
+    validation_type=ValidationType.RANGE,
+    rule={'min': 0, 'max': 120},
+    error_message='Age must be between 0 and 120'
+))
+
+# Validate props
+is_valid, errors = schema.validate({'email': 'test@example.com', 'age': 25})
+```
+
+**Validation Types:**
+- `REQUIRED` - Field must be present
+- `TYPE` - Value type checking (str, int, float, bool, list, dict)
+- `PATTERN` - Regex pattern matching
+- `RANGE` - Min/max value validation
+- `ENUM` - Value must be in allowed list
+- `CUSTOM` - Custom validation function
 
 ## Advanced Usage
 

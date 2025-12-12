@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "streamlit-html-components"
-version = "0.1.0"
-description = "Use traditional HTML/CSS/JS file structure with Streamlit applications"
+version = "0.3.0"
+description = "Use traditional HTML/CSS/JS file structure with Streamlit - now with hot reload, state management, and validation"
 readme = "README.md"
 requires-python = ">=3.10"  # CHANGED: Force Python 3.10+
 license = {text = "MIT"}
