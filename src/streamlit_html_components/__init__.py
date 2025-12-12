@@ -75,6 +75,16 @@ from .validation import (
     PropsSchema,
     PropsValidator
 )
+from .dev_server import (
+    DevServer,
+    enable_hot_reload,
+    disable_hot_reload,
+    get_dev_server
+)
+from .file_watcher import (
+    FileWatcher,
+    FileChangeEvent
+)
 from .exceptions import (
     StreamlitHtmlComponentsError,
     ComponentNotFoundError,
@@ -129,6 +139,14 @@ __all__ = [
     "ValidationRule",
     "PropsSchema",
     "PropsValidator",
+
+    # Development (Hot Reload)
+    "DevServer",
+    "enable_hot_reload",
+    "disable_hot_reload",
+    "get_dev_server",
+    "FileWatcher",
+    "FileChangeEvent",
 
     # Configuration
     "get_config",
