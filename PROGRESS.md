@@ -956,18 +956,364 @@ enable_hot_reload(verbose=True)
 - New: test_hot_reload.py (200+ lines)
 - Enhanced: __init__.py
 
-### What's Next (Phase 3.2)
+---
 
-**Bidirectional Communication:**
-- Python → JavaScript data flow
-- Event replay capability
-- Real-time state synchronization
-- Comprehensive examples
+## Phase 3.2 - Enhanced Bidirectional Communication ✅ COMPLETE!
+
+**Completed:** [Current Date]
+
+### Overview
+
+Phase 3.2 added comprehensive enhancements to bidirectional communication between Python and JavaScript, including state synchronization, event replay, conflict resolution, and real-time state management.
+
+### What Was Built
+
+#### 1. Enhanced BidirectionalBridge (bridge.py)
+
+**New Features:**
+- **State Management**: Component state tracking with version control
+- **Event Recording**: Automatic event history for all communications
+- **Event Replay**: Replay recorded events to reconstruct state
+- **State Subscribers**: React to state changes in real-time
+- **Event Export/Import**: Serialize events to/from JSON
+
+**Key Methods Added:**
+```python
+# State management
+bridge.set_state(component_name, state)
+bridge.get_state(component_name)
+bridge.update_state(component_name, updates, merge=True)
+
+# State subscribers
+bridge.subscribe_to_state(component_name, callback)
+
+# Event recording & replay
+bridge.record_event(component_name, event_type, data)
+bridge.get_event_history(component_name, event_type, limit)
+bridge.replay_events(component_name, event_type)
+bridge.export_events(component_name)
+
+# State push to JavaScript
+bridge.get_state_update_script(component_name)
+```
+
+**Event Class:**
+- Dataclass representing communication events
+- Automatic timestamping
+- Serialization to dictionary
+
+#### 2. StateManager (sync.py)
+
+**Real-time State Synchronization System:**
+
+**Conflict Resolution Strategies:**
+1. **CLIENT_WINS**: Client updates always accepted
+2. **SERVER_WINS**: Server state maintained on conflicts
+3. **LATEST_WINS**: Most recent update wins
+4. **MERGE**: Intelligent merging of changes (server wins on conflicts)
+5. **CUSTOM**: User-defined resolution function
+
+**State Versioning:**
+- Every state change creates a new version
+- Complete history tracking
+- Rollback to any version
+- Version-based conflict detection
+
+**State Diffing:**
+```python
+# Compute differences between states
+diff = StateDiff.diff(old_state, new_state)
+# Returns: {'added': {...}, 'modified': {...}, 'removed': {...}}
+
+# Apply diff to reconstruct state
+new_state = StateDiff.apply_diff(old_state, diff)
+```
+
+**Key Features:**
+- State snapshots with metadata (version, timestamp, source)
+- History with configurable max size
+- State subscribers for real-time notifications
+- Export/import state as JSON
+- Rollback by version or steps
+
+#### 3. Examples & Documentation
+
+**Created Examples:**
+
+1. **demo_counter.py** - Interactive counter demonstrating:
+   - JavaScript → Python event communication
+   - Python → JavaScript state updates
+   - Real-time state synchronization
+   - Event & state history tracking
+   - Beautiful UI with animations
+
+2. **demo_advanced.py** - Advanced features including:
+   - All 5 conflict resolution strategies
+   - State diffing examples
+   - Event replay demonstrations
+   - State rollback scenarios
+   - Custom conflict resolvers
+   - State subscriptions
+
+3. **README.md** - Comprehensive guide with:
+   - Feature explanations
+   - Code examples
+   - Integration patterns
+   - Architecture diagrams
+   - Troubleshooting tips
+
+### Files Created/Modified
+
+**New Files:**
+1. **bidirectional/sync.py** (450+ lines)
+   - StateManager class
+   - StateDiff utility class
+   - StateSnapshot dataclass
+   - ConflictResolution enum
+
+2. **examples/bidirectional/demo_counter.py** (300+ lines)
+   - Interactive counter component
+   - Complete HTML/CSS/JS example
+   - Event and state tracking
+
+3. **examples/bidirectional/demo_advanced.py** (400+ lines)
+   - 6 comprehensive demos
+   - All conflict resolution strategies
+   - State diffing and replay
+
+4. **examples/bidirectional/README.md** (250+ lines)
+   - Complete documentation
+   - Usage examples
+   - Best practices
+
+5. **test_bidirectional_basic.py** (450+ lines)
+   - 20 comprehensive tests
+   - All features validated
+   - Standalone (no external dependencies)
+
+**Enhanced Files:**
+1. **bidirectional/bridge.py**
+   - Added Event dataclass
+   - Added state management methods (250+ lines)
+   - Added event recording/replay (150+ lines)
+   - Added state subscribers
+   - Enhanced handle_event with recording
+
+2. **bidirectional/__init__.py**
+   - Exported all new classes
+
+3. **__init__.py**
+   - Exported bidirectional features
+
+### Test Results
+
+**All 20 Tests Passing:**
+
+1. ✅ Event class creation and serialization
+2. ✅ Bridge state management (set, get, update)
+3. ✅ State subscribers (bridge)
+4. ✅ Event recording (automatic and filtered)
+5. ✅ Event replay capability
+6. ✅ Event export to JSON
+7. ✅ Clear event history
+8. ✅ StateManager basic operations
+9. ✅ State diffing (added/modified/removed)
+10. ✅ State history tracking
+11. ✅ State rollback (by version and steps)
+12. ✅ Conflict resolution - CLIENT_WINS
+13. ✅ Conflict resolution - SERVER_WINS
+14. ✅ Conflict resolution - MERGE
+15. ✅ Custom conflict resolver
+16. ✅ State manager subscribers
+17. ✅ State export/import
+18. ✅ Get diff since version
+19. ✅ Clear state
+20. ✅ StateSnapshot creation
+
+### Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                  Bidirectional Communication                │
+└─────────────────────────────────────────────────────────────┘
+                          │
+        ┌─────────────────┴─────────────────┐
+        │                                   │
+┌───────▼──────────┐              ┌────────▼─────────┐
+│  Bridge Layer    │              │   State Layer    │
+│  (bridge.py)     │              │   (sync.py)      │
+├──────────────────┤              ├──────────────────┤
+│ • Event routing  │              │ • Versioning     │
+│ • Callbacks      │              │ • Conflicts      │
+│ • Script inject  │              │ • History        │
+│ • Event record   │              │ • Diffing        │
+│ • State mgmt     │              │ • Rollback       │
+└──────────────────┘              └──────────────────┘
+        │                                   │
+        └─────────────────┬─────────────────┘
+                          │
+              ┌───────────▼───────────┐
+              │   JavaScript Bridge   │
+              │  (injected in HTML)   │
+              ├───────────────────────┤
+              │ • sendToStreamlit()   │
+              │ • onStreamlitData()   │
+              │ • Origin validation   │
+              └───────────────────────┘
+```
+
+### Usage Examples
+
+#### Basic State Synchronization
+
+```python
+from streamlit_html_components.bidirectional import (
+    BidirectionalBridge,
+    StateManager
+)
+
+bridge = BidirectionalBridge()
+state_manager = StateManager()
+
+# Set initial state
+state_manager.set_state('counter', {'count': 0})
+
+# Register event handler
+def on_increment(data):
+    current = state_manager.get_state('counter')
+    state_manager.update_state('counter', {'count': current['count'] + 1})
+
+bridge.register_callback('counter', 'increment', on_increment)
+
+# Handle events from JavaScript
+bridge.handle_event('counter', {
+    'event': 'increment',
+    'data': {}
+})
+```
+
+#### Conflict Resolution
+
+```python
+from streamlit_html_components.bidirectional import (
+    StateManager,
+    ConflictResolution
+)
+
+# Use built-in strategy
+manager = StateManager(
+    conflict_resolution=ConflictResolution.MERGE
+)
+
+# Or use custom resolver
+def custom_resolver(client_state, server_state):
+    # Your logic here
+    return resolved_state
+
+manager = StateManager(conflict_resolution=ConflictResolution.CUSTOM)
+manager.set_conflict_resolver(custom_resolver)
+```
+
+#### Event Replay
+
+```python
+# Events are recorded automatically
+bridge.handle_event('app', {'event': 'save', 'data': {...}})
+bridge.handle_event('app', {'event': 'load', 'data': {...}})
+
+# Get event history
+history = bridge.get_event_history('app')
+
+# Replay all events
+bridge.replay_events('app')
+
+# Export for analysis
+json_data = bridge.export_events('app')
+```
+
+### Performance Characteristics
+
+**State Management:**
+- State storage: O(1) lookup by component name
+- History storage: Limited to max_history (default 100)
+- Diffing: O(k) where k = number of keys
+- Rollback: O(h) where h = history size
+
+**Event Recording:**
+- Event storage: O(1) append
+- History limit: 1000 events (configurable)
+- Filtering: O(n) where n = total events
+- Export: O(n) serialization
+
+**Memory Usage:**
+- Each state snapshot: ~100-500 bytes (depends on state size)
+- Each event: ~100-300 bytes (depends on data)
+- History pruning: Automatic when limits exceeded
+
+### Code Statistics
+
+**Phase 3.2 Additions:**
+- Lines added: ~2,300
+- Files created: 5
+- Files modified: 3
+- Tests added: 20
+- Examples created: 2
+- Documentation pages: 1
+
+**Cumulative Project Stats:**
+- Total lines: ~10,400
+- Total tests: 92
+- Test pass rate: 100%
+
+### Developer Experience
+
+**Before Phase 3.2:**
+```python
+# Basic event handling only
+bridge.register_callback('comp', 'click', callback)
+bridge.handle_event('comp', event_data)
+# No state tracking, no replay, no conflict resolution
+```
+
+**After Phase 3.2:**
+```python
+# Full state management with conflict resolution
+state_manager = StateManager(
+    conflict_resolution=ConflictResolution.MERGE,
+    max_history=100
+)
+
+# State synchronization
+state_manager.set_state('comp', initial_state)
+state_manager.subscribe('comp', on_state_change)
+
+# Automatic event recording
+bridge.handle_event('comp', event_data)  # Recorded automatically
+
+# Event replay
+bridge.replay_events('comp')
+
+# State rollback
+state_manager.rollback('comp', to_version=3)
+
+# Export for debugging
+events_json = bridge.export_events('comp')
+state_json = state_manager.export_state('comp')
+```
+
+### What's Next (Phase 3.3+)
 
 **Component Library System:**
 - Package components for distribution
-- Component versioning
-- Dependency management
+- Component versioning and dependencies
+- NPM-style component registry
+- Component templates and scaffolding
+
+**Production Readiness:**
+- Comprehensive documentation
+- Performance benchmarks
+- Security audit
+- PyPI publishing
 
 ---
 

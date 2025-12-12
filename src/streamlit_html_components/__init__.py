@@ -85,6 +85,15 @@ from .file_watcher import (
     FileWatcher,
     FileChangeEvent
 )
+from .bidirectional import (
+    BidirectionalBridge,
+    get_bridge,
+    Event,
+    StateManager,
+    StateDiff,
+    StateSnapshot,
+    ConflictResolution
+)
 from .exceptions import (
     StreamlitHtmlComponentsError,
     ComponentNotFoundError,
@@ -147,6 +156,15 @@ __all__ = [
     "get_dev_server",
     "FileWatcher",
     "FileChangeEvent",
+
+    # Bidirectional Communication
+    "BidirectionalBridge",
+    "get_bridge",
+    "Event",
+    "StateManager",
+    "StateDiff",
+    "StateSnapshot",
+    "ConflictResolution",
 
     # Configuration
     "get_config",
