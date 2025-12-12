@@ -262,7 +262,7 @@ def enable_hot_reload(
     global _dev_server
 
     if verbose:
-        DebugMode.enable(level=2)
+        DebugMode.enable(verbose_level=2)
 
     # Get config from v2 if not provided
     if config is None:
