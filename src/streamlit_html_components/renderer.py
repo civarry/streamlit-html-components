@@ -79,7 +79,6 @@ class ComponentRenderer:
         height: Optional[int] = None,
         width: Optional[int] = None,
         scrolling: bool = False,
-        key: Optional[str] = None,
         cache: Optional[bool] = None,
         on_event: Optional[Callable] = None
     ) -> Any:
@@ -92,7 +91,6 @@ class ComponentRenderer:
             height: Component height in pixels
             width: Component width in pixels
             scrolling: Enable scrolling in iframe
-            key: Streamlit component key
             cache: Override cache setting (uses config default if None)
             on_event: Callback for JavaScript events
 
@@ -161,8 +159,7 @@ class ComponentRenderer:
                     cached_html,
                     height=height,
                     width=width,
-                    scrolling=scrolling,
-                    key=key
+                    scrolling=scrolling
                 )
 
         # Render template
@@ -224,8 +221,7 @@ class ComponentRenderer:
             full_html,
             height=height,
             width=width,
-            scrolling=scrolling,
-            key=key
+            scrolling=scrolling
         )
 
         # Handle callback

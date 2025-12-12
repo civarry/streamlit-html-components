@@ -177,7 +177,6 @@ def render_component_v2(
     height: Optional[int] = None,
     width: Optional[int] = None,
     scrolling: bool = False,
-    key: Optional[str] = None,
     cache: Optional[bool] = None,
     on_event: Optional[Callable] = None
 ) -> Any:
@@ -197,7 +196,6 @@ def render_component_v2(
         height: Component height in pixels
         width: Component width in pixels
         scrolling: Enable scrolling in iframe
-        key: Unique key for Streamlit component
         cache: Enable caching (overrides global default)
         on_event: Callback function for JavaScript events
 
@@ -223,7 +221,6 @@ def render_component_v2(
         height=height,
         width=width,
         scrolling=scrolling,
-        key=key,
         cache=cache,
         on_event=on_event
     )

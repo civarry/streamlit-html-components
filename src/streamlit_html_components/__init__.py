@@ -104,7 +104,7 @@ from .exceptions import (
     SecurityError,
 )
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 __author__ = "CJ Carito"
 __license__ = "MIT"
 
