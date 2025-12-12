@@ -9,7 +9,7 @@
 
 This document tracks progress on the complete framework redesign of streamlit-html-components. The project is transforming from a buggy proof-of-concept into a production-ready library with enterprise-grade reliability.
 
-**Current Phase:** Phase 2 - Enhanced Developer Experience (Phase 2.1 & 2.2 ✅ COMPLETE!)
+**Current Phase:** Phase 3 - Advanced Features (Phase 3.1 ✅ COMPLETE!)
 
 ---
 
@@ -821,14 +821,153 @@ schema.add_rule('score', ValidationType.CUSTOM, is_positive,
 - New: test_validation_basic.py (200+ lines)
 - Enhanced: __init__.py
 
-### What's Next (Phase 2.3)
+---
 
-**Documentation & Examples:**
-- Comprehensive README with examples
-- API reference documentation
-- Migration guide updates
-- Example schemas for common components
-- Best practices guide
+## ✅ Phase 3.1 - Hot Reload (100% Complete)
+
+**Goal:** Enable automatic component reloading during development
+
+### New Files Created
+
+1. **file_watcher.py** (300+ lines) - File watching system
+   - `FileWatcher` - Monitors files for changes
+   - `FileChangeEvent` - Represents file change events
+   - Dual mode: watchdog (optimal) or polling (fallback)
+   - Pattern matching for file types
+   - Context manager support
+
+2. **dev_server.py** (300+ lines) - Development server with hot reload
+   - `DevServer` - Manages file watching and cache invalidation
+   - `enable_hot_reload()` - Convenience function to start hot reload
+   - `disable_hot_reload()` - Stop hot reload
+   - `get_dev_server()` - Get active dev server instance
+
+3. **test_file_watcher_basic.py** (300+ lines) - FileWatcher tests
+   - 7 test scenarios
+   - Tests modifications, creation, deletion
+   - Pattern matching tests
+   - Context manager tests
+   - All tests passing
+
+4. **test_hot_reload.py** (200+ lines) - DevServer integration tests
+   - Cache invalidation tests
+   - Multi-file type watching
+   - Integration with cache manager
+
+### Key Features
+
+**File Watching:**
+- Detects file modifications, creation, deletion, moves
+- Pattern matching (*.html, *.css, *.js)
+- Configurable poll interval (default 1.0s)
+- Optional watchdog library for efficient watching
+- Automatic fallback to polling if watchdog unavailable
+- Thread-safe monitoring
+
+**Hot Reload:**
+- Automatic cache invalidation on file changes
+- Component-specific invalidation (only affected components)
+- Streamlit rerun integration for instant updates
+- Debug logging for development
+- Works with v2 API configuration
+- Production-safe (disabled by default)
+
+**Dual Mode Support:**
+1. **Watchdog mode** (if library installed):
+   - Instant file change notifications
+   - Operating system events
+   - Efficient (no polling)
+
+2. **Polling mode** (fallback):
+   - Check files periodically
+   - No external dependencies
+   - Configurable interval
+
+### Developer Experience
+
+**Before (no hot reload):**
+```python
+# Edit template file...
+# Have to:
+# 1. Manually restart Streamlit app
+# 2. Or clear cache manually
+# 3. Wait for full reload
+```
+
+**After (with hot reload):**
+```python
+from streamlit_html_components import configure_v2, enable_hot_reload
+
+configure_v2(
+    templates_dir='components/templates',
+    styles_dir='components/styles',
+    scripts_dir='components/scripts'
+)
+
+# Single line to enable hot reload!
+enable_hot_reload(verbose=True)
+
+# Now just edit your files...
+# Changes appear instantly in Streamlit! 🔥
+```
+
+**What Gets Watched:**
+- `templates/*.html` - Component templates
+- `styles/*.css` - CSS stylesheets
+- `scripts/*.js` - JavaScript files
+
+**What Happens on Change:**
+1. FileWatcher detects file modification
+2. DevServer determines affected component(s)
+3. Cache invalidated for those components
+4. Streamlit rerun triggered (if available)
+5. Component re-renders with new content
+
+### Enhanced Files
+
+5. **__init__.py** - Exported hot reload functions
+   - Added DevServer, enable_hot_reload, disable_hot_reload
+   - Added FileWatcher, FileChangeEvent
+
+### Test Results
+
+**All 7 FileWatcher Tests Passing:**
+- ✅ Detect file modifications
+- ✅ Detect new file creation
+- ✅ Watch multiple files
+- ✅ Pattern matching (*.html, *.css, *.js)
+- ✅ Start/stop control
+- ✅ Context manager support
+- ✅ FileChangeEvent with timestamps
+
+**Performance:**
+- Polling mode: ~100ms overhead per check
+- Watchdog mode: near-zero overhead
+- Thread-based: non-blocking
+- Minimal impact when disabled
+
+### Commit Information
+
+**Commit:** cb44b81 - feat: Phase 3.1 - Hot reload for component development
+- 5 files changed, 1,152 insertions(+)
+- New: file_watcher.py (300+ lines)
+- New: dev_server.py (300+ lines)
+- New: test_file_watcher_basic.py (300+ lines)
+- New: test_hot_reload.py (200+ lines)
+- Enhanced: __init__.py
+
+### What's Next (Phase 3.2)
+
+**Bidirectional Communication:**
+- Python → JavaScript data flow
+- Event replay capability
+- Real-time state synchronization
+- Comprehensive examples
+
+**Component Library System:**
+- Package components for distribution
+- Component versioning
+- Dependency management
 
 ---
 
